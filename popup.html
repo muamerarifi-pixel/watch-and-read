@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{--bg:#fff;--fg:#1c1e21;--muted:#65676b;--line:#e4e6eb;--accent:#1877f2}
+  @media (prefers-color-scheme:dark){:root{--bg:#18191a;--fg:#e4e6eb;--muted:#b0b3b8;--line:#3a3b3c;--accent:#2d88ff}}
+  *{box-sizing:border-box}
+  body{margin:0;width:310px;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+  header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+  header img{width:28px;height:28px}
+  h1{font-size:15px;margin:0}
+  header p{margin:0;color:var(--muted);font-size:12px}
+  .go{display:block;width:calc(100% - 32px);margin:4px 16px 12px;padding:10px;border:0;border-radius:8px;
+      background:var(--accent);color:#fff;font:600 14px system-ui,sans-serif;cursor:pointer}
+  .go:hover{filter:brightness(1.08)}
+  .status{min-height:18px;margin:-6px 16px 8px;color:var(--muted);font-size:12px;text-align:center}
+  label{display:flex;gap:10px;align-items:flex-start;padding:10px 16px;border-top:1px solid var(--line);cursor:pointer}
+  label input{margin-top:3px;accent-color:var(--accent)}
+  label small{display:block;color:var(--muted);font-size:12px}
+  footer{padding:10px 16px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+  kbd{border:1px solid var(--line);border-radius:4px;padding:0 4px;font-size:11px}
+</style>
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="">
+    <div><h1>Watch &amp; Read</h1><p>Keep the video playing while you read comments</p></div>
+  </header>
+
+  <button class="go" id="go">Float the playing video now</button>
+  <div class="status" id="status"></div>
+
+  <label><input type="checkbox" id="autoFloat">
+    <span>Auto-float when I open comments<small>Clicking a Comment button floats the video in a small window that keeps playing.</small></span></label>
+  <label><input type="checkbox" id="muteOthers">
+    <span>Silence the duplicate video<small>Mutes the second copy Facebook opens in the post window.</small></span></label>
+  <label><input type="checkbox" id="hoverButton">
+    <span>Show “Float” button on videos<small>Appears at the top-left corner when you hover a video.</small></span></label>
+
+  <footer>Shortcut: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> · Change it at chrome://extensions/shortcuts</footer>
+  <script src="inject.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

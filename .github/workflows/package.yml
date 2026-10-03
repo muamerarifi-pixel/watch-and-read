@@ -1,0 +1,45 @@
+# Checks the extension and publishes a ready-to-install zip on the Releases page.
+# Direct download: https://github.com/muamerarifi-pixel/watch-and-read/releases/latest/download/watch-and-read.zip
+
+name: Package extension
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check manifest and scripts
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8'))"
+          for f in *.js; do node --check "$f"; done
+
+      - name: Build zips
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          mkdir -p dist/watch-and-read
+          cp -r manifest.json *.js *.html icons dist/watch-and-read/
+          (cd dist && zip -qr -X watch-and-read.zip watch-and-read)
+          (cd dist/watch-and-read && zip -qr -X ../watch-and-read-store-upload.zip .)
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v$VERSION"
+          NOTES="Download **watch-and-read.zip**, unzip it, then in chrome://extensions turn on Developer mode → Load unpacked → pick the watch-and-read folder. (watch-and-read-store-upload.zip is for the Chrome Web Store.)"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/watch-and-read.zip dist/watch-and-read-store-upload.zip --clobber
+          else
+            gh release create "$TAG" dist/watch-and-read.zip dist/watch-and-read-store-upload.zip \
+              --title "Watch & Read $VERSION" --notes "$NOTES" --latest
+          fi
